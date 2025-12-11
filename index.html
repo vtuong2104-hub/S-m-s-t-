@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>động đất sóng thần 💯👇</title>
+    <link rel="preconnect" href="https://i.supaimg.com">
+<style>
+/* Reset & Cấu trúc cơ bản */
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    color: #333;
+    overflow-x: hidden;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    position: relative;
+    transition: background-image 0.5s;
+}
+body.lock-scroll { overflow: hidden; }
+
+/* Overlay (Không còn header) */
+#mainBackgroundOverlay {
+    position: fixed; inset: 0; z-index: -1; 
+    backdrop-filter: blur(8px); 
+    background: rgba(255, 255, 255, 0.5); 
+    opacity: 1; 
+    transition: opacity 0.5s ease;
+}
+
+/* Nút Social (Góc trái dưới) */
+#socialLinks {
+    position: fixed; bottom: 750px; left: 6px; z-index: 3001; 
+    display: flex; flex-direction: column; gap: 8px; 
+    opacity: 0; pointer-events: none; transition: opacity 0.5s;
+}
+#socialLinks a {
+    display: block; width: 70px; text-align: center;
+    padding: 8px 0px; border-radius: 10px; text-decoration: none; 
+    font-size: 21px; font-weight: 900; color: #fff;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3); 
+    transition: transform 0.2s, opacity 0.2s;
+}
+
+/* Banner Hàng ngày - KHÔNG ANIMATION */
+#dailyBanner {
+    display: flex; justify-content: flex-start; gap: 15px;
+    padding: 16px; position: fixed; top: 0px; 
+    
+    /* CĂN GIỮA */
+    left: 50%;
+    transform: translateX(-50%); 
+    
+    max-width: 500px; width:91%; z-index: 999;
+    background: rgba(255, 255, 255, 0.20); backdrop-filter: blur(20px); 
+    border-radius: 0 0 16px 16px; border: 1px solid rgba(266, 266, 266, 0.15);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    overflow-x: auto; white-space: nowrap;
+    
+    /* Hiệu ứng ẩn/hiện */
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+}
+#dailyBanner.show {
+    opacity: 1; pointer-events: auto;
+    transform: translateX(-50%); 
+}
+#dailyBanner::-webkit-scrollbar { display: none; }
+
+/* Ảnh trong banner */
+#dailyBanner img {
+    width: 160px; height: 220px; flex-shrink: 0; object-fit: cover;
+    border-radius: 12px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.8);
+    position: relative;
+    transition: transform 0.3s ease, box-shadow 0.3s; 
+    cursor: pointer;
+}
+#dailyBanner img:hover { 
+    transform: scale(1.05); 
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5); 
+}
+
+/* Nhãn Banner */
+.banner-label {
+    position: fixed; left: 50%; transform: translateX(-50%);
+    
+    padding: 6px 12px; background: #e60023; border-radius: 30px;
+    color: #fff; font-size: 13px; font-weight: 700;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3); z-index: 1100;
+    white-space: nowrap; opacity: 0; transition: opacity 0.4s ease-out;
+}
+
+/* Nội dung chính và Gallery */
+main { padding-top: 275px; /* Giá trị mặc định */ transition: padding-top 0.5s; }
+.gallery-container {
+    max-width: 1200px; margin: 0 auto; padding: 10px;
+    column-count: 2; column-gap: 10px;
+    
+    /* Hiệu ứng bật ra */
+    opacity: 0; transform: translateY(20px) scale(0.98); 
+    transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+}
+.gallery-container.show {
+    opacity: 1; transform: translateY(0) scale(1); 
+}
+@media (min-width: 768px) { .gallery-container { column-count: 3; } }
+
+.image-frame {
+    break-inside: avoid-column; width: 100%; margin-bottom: 10px;
+    border-radius: 16px; overflow: hidden; background-color: #fff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); cursor: pointer;
+    position: relative; transition: box-shadow .3s, transform .3s;
+}
+.image-frame:hover { box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); transform: translateY(-2px); }
+
+/* Hiệu ứng Fade-in khi cuộn */
+.image-frame.fade-in {
+    opacity: 0; transform: translateY(10px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out, box-shadow .2s;
+}
+.image-frame.fade-in.visible { opacity: 1; transform: translateY(0); }
+
+/* Trạng thái Loading */
+.image-frame.loading { min-height: 250px; background-color: #f0f0f0; display: flex; justify-content: center; align-items: center; }
+.spinner { 
+    position: absolute; border: 4px solid #f3f3f3; 
+    border-top: 4px solid #e60023; border-radius: 50%; 
+    width: 30px; height: 30px; animation: spin 1s linear infinite; z-index: 10;
+}
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+.image-frame.loading img { opacity: 0; transition: opacity 0.4s ease; }
+.image-frame img { width: 100%; height: auto; display: block; object-fit: cover; opacity: 1; transition: opacity 0.4s ease; }
+
+/* Phân trang */
+.pagination {
+    position: fixed;      /* CỐ ĐỊNH */
+    bottom: 10px;         /* Cách đáy màn hình 20px */
+    left: 50%;            /* Căn giữa màn hình ngang */
+    transform: translateX(-50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    z-index: 2000;        /* Lớn hơn gallery để nút nổi lên */
+    background: rgba(255,255,255,0.1); /* optional, nếu muốn mờ mờ */
+    padding: 5px 10px;
+    border-radius: 12px;
+}
+.pagination button {
+    padding: 8px 14px; border: none; border-radius: 8px;
+    background: #e60023; color: #fff; cursor: pointer;
+    font-weight: 600; transition: 0.2s; min-width: 40px; 
+}
+.pagination button:hover { background: #ad081b; transform: scale(1.05); }
+.pagination button:disabled { background: #ccc; color: #999; cursor: not-allowed; transform: none; box-shadow: none; }
+.pagination #pageInfo { 
+    padding: 8px 10px; font-weight: 700; color: #333;
+    background: rgba(255, 255, 255, 0.7); border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); 
+}
+
+/* Modal Xem Ảnh */
+#imageModal {
+    display: flex; position: fixed; inset: 0;
+    background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(12px);
+    z-index: 2000; justify-content: center; align-items: center;
+    flex-direction: column; opacity: 0; visibility: hidden;
+    transition: opacity 0.4s ease, visibility 0.4s;
+}
+#imageModal.visible { opacity: 1; visibility: visible; }
+#modalImg {
+    max-width: 90%; max-height: 85%; border-radius: 18px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7); object-fit: contain;
+    cursor: default; transform: scale(0.8);
+    transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+#imageModal.visible #modalImg { transform: scale(1); }
+#closeBtn {
+    margin-top: 20px; padding: 12px 25px; background: #e60023;
+    color: #fff; border: none; border-radius: 10px; font-weight: 600;
+    cursor: pointer; opacity: 0;
+    transition: transform 0.2s, opacity 0.3s, background-color 0.3s;
+}
+#closeBtn:hover { transform: scale(1.05); background: #ad081b; }
+#imageModal.visible #closeBtn { opacity: 1; }
+
+/* Màn hình Chào mừng */
+#welcomeScreen {
+    position: fixed; inset: 0; z-index: 3000; 
+    display: flex; 
+    justify-content: center; 
+    
+    /* CHỈNH LÊN CAO: Bắt đầu từ phía trên */
+    align-items: flex-start; 
+    
+    /* ĐẨY XUỐNG MỘT KHOẢNG CÁCH CỤ THỂ TỪ ĐỈNH */
+    padding-top: 23vh; 
+    
+    background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(8px); 
+    opacity: 1; transition: opacity 0.8s ease;
+}
+#welcomeContent {
+    background: rgba(255,255,255, 0.20); 
+    backdrop-filter: blur(-10px);
+    border-radius: 30px; 
+    padding: 30px; 
+    max-width: 280px; 
+    width: 80%; 
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}    
+#welcomeScreen.fading-in #welcomeContent { opacity: 1; transform: scale(1); }
+#welcomeScreen.fading-out { opacity: 0; pointer-events: none; backdrop-filter: blur(0px); }
+#welcomeScreen.fading-out #welcomeContent { opacity: 0 !important; transform: scale(1.05); }
+
+#welcomeAvatar {
+    width: 80px; height: 80px; border-radius: 50%; object-fit: cover;
+    margin-bottom: 15px; border: 4px solid #e60023;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+#welcomeTitle { font-size: 24px; font-weight: 900; color: #fff; margin: 0 0 5px 0; letter-spacing: 1px; }
+#welcomeSubtitle { font-size: 16px; color: #fff; font-weight: 500; }
+
+/* STYLE CHO NÚT BẮT ĐẦU */
+#startBtn {
+    margin-top: 20px;
+    padding: 10px 25px;
+    background:rgba(255,255,255,0.5);
+    color:#e60023;
+    border: none;
+    border-radius: 18px;
+    font-weight: 700;
+    font-size: 16px;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    transition: background 0.3s, transform 0.2s;
+}
+#startBtn:hover {
+    background: #ad081b;
+    transform: translateY(-2px);
+}
+/* Credit */
+#credit { position: fixed; bottom: 778px; right: 10px; font-size: 13px; color: #121523e3; z-index: 9999; }
+</style>
+</head>
+<body class="lock-scroll">
+
+<div id="mainBackgroundOverlay">@vntng2104</div> 
+
+<div id="welcomeScreen">
+    <div id="welcomeContent">
+        <img id="welcomeAvatar" src="https://i.supaimg.com/f24f10bc-c9d0-4517-b270-a504d0724801.gif" alt="Avatar">
+        <h2 id="welcomeTitle">hello!.</h2>
+        <p id="welcomeSubtitle">⚠️cảnh báo nội dung nhạy cảm.🔞 (note)cho add 1 follow tik tok để có động lực update wed nhaaa)@vntng2104</p>
+        <button id="startBtn">bắt đầu khám phá </button>
+    </div>
+</div>
+
+<div id="socialLinks">
+</div>
+
+<div id="dailyBanner" style="display:none"></div>
+<div class="banner-label" id="fixedBannerLabel" style="display:none">đề xuất</div>
+
+<main>
+    <div class="gallery-container" id="imageGallery"></div>
+    <div class="pagination" id="pagination"></div> 
+</main>
+
+<div id="imageModal">
+    <img id="modalImg" src="" alt="Ảnh phóng to">
+    <button id="closeBtn">Đóng</button>
+</div>
+<div id="credit">©tiktok-@vntng2104</div>
+
+<script>
+const gallery=document.getElementById('imageGallery');
+const imageModal=document.getElementById('imageModal');
+const modalImg=document.getElementById('modalImg');
+const closeBtn=document.getElementById('closeBtn');
+const dailyBanner=document.getElementById('dailyBanner');
+const fixedBannerLabel=document.getElementById('fixedBannerLabel');
+const main=document.querySelector('main');
+const bodyElement=document.body;
+const socialLinks = document.getElementById('socialLinks'); 
+const welcomeScreen = document.getElementById('welcomeScreen'); 
+const startBtn = document.getElementById('startBtn'); 
+
+const IMAGES_PER_BANNER=3; 
+const IMAGES_PER_PAGE=10;
+let currentPage=1;
+let allGalleryImages = []; 
+
+const JSON_LINK = "https://raw.githubusercontent.com/vtuong2104-hub/S-m-s-t-/main/sever.json"; 
+
+// --- HÀM XÁO TRỘN MẢNG (Fisher-Yates) ---
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[i], array[j]];
+    }
+    return array;
+}
+// ------------------------------------------
+
+// --- INTERSECTION OBSERVER CHO HIỆU ỨNG FADE-IN KHI CUỘN XUỐNG ---
+let observer;
+function setupIntersectionObserver() {
+    if ('IntersectionObserver' in window) {
+        observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target); 
+                }
+            });
+        }, {
+            rootMargin: '0px', 
+            threshold: 0.1 
+        });
+    } else {
+        console.warn('IntersectionObserver không được hỗ trợ.');
+    }
+}
+setupIntersectionObserver();
+// -----------------------------------------------------------------
+
+function setBannerLabelPosition(){
+    const labelHeight=30;
+    // GIỮ NGUYÊN (HOẶC CHỈNH TỪ -7 SANG 15): Pop-up label vẫn nằm ở vị trí đã chỉnh
+    const offsetFromBottom= -4; 
+    
+    // top (0) + padding (16) + chiều cao ảnh (220) + padding (16) = 252
+    // Đã chỉnh top: 0px trong CSS, nên bannerBottomPosition được tính từ 0.
+    const bannerBottomPosition=0+16+220+16; 
+    const finalTop=bannerBottomPosition-(labelHeight/2)-offsetFromBottom;
+    fixedBannerLabel.style.top=`${finalTop}px`;
+}
+
+function showDailyBanner(bannerImages){
+    dailyBanner.innerHTML='';
+    bannerImages.slice(0,IMAGES_PER_BANNER).forEach(link=>{
+        const img=document.createElement('img');
+        img.src=link;
+        img.alt = "Ảnh banner";
+        img.onclick=e=>{e.stopPropagation();openImage(link)};
+        dailyBanner.appendChild(img);
+    });
+    dailyBanner.style.display='flex';
+    fixedBannerLabel.style.display='block';
+    setBannerLabelPosition();
+}
+
+function showContentWithTransition(galleryImages) {
+    gallery.classList.add('show'); 
+    
+    dailyBanner.classList.add('show');
+    fixedBannerLabel.style.opacity = '1';
+    
+    displayPage(currentPage, galleryImages);
+}
+
+function initializeContent(data){
+    if (data.background) {
+        bodyElement.style.backgroundImage = `url('${data.background}')`;
+    }
+    
+    let allImages = data.images || []; 
+    allImages = shuffleArray(allImages); 
+    
+    const galleryImages = allImages;
+    let potentialBannerImages = allImages.slice(IMAGES_PER_PAGE); 
+    potentialBannerImages = shuffleArray(potentialBannerImages); 
+    const bannerImages = potentialBannerImages.slice(0, IMAGES_PER_BANNER); 
+    
+    showDailyBanner(bannerImages);
+    allGalleryImages = galleryImages; 
+    
+    showContentWithTransition(allGalleryImages);
+    
+    const overlay = document.getElementById('mainBackgroundOverlay');
+    if (overlay) overlay.style.opacity = '0';
+}
+
+function displayPage(page, images) {
+    gallery.innerHTML = '';
+    if (observer) { observer.disconnect(); setupIntersectionObserver(); }
+
+    const start = (page - 1) * IMAGES_PER_PAGE;
+    const end = start + IMAGES_PER_PAGE;
+
+    images.slice(start, end).forEach((link, index) => {
+        const frame = document.createElement('div');
+        frame.className = 'image-frame fade-in'; // bỏ loading để frame hiện luôn
+        gallery.appendChild(frame);
+
+        const spinner = document.createElement('div');
+        spinner.className = 'spinner';
+        frame.appendChild(spinner);
+
+        const img = document.createElement('img');
+        img.alt = 'Ảnh ' + (start + index + 1);
+        frame.appendChild(img);
+
+        // Load ảnh sau một tí, nhưng frame đã hiển thị
+        setTimeout(() => { img.src = link; }, 50);
+
+        img.onload = () => { 
+            if(spinner.parentNode) frame.removeChild(spinner);
+            if(observer) observer.observe(frame); 
+        };
+        img.onerror = () => {
+            frame.style.backgroundColor = '#ffdddd';
+            if(spinner.parentNode) frame.removeChild(spinner);
+            if(observer) observer.observe(frame);
+        };
+
+        frame.onclick = () => openImage(link);
+    });
+
+    updateBannerVisibility(page);
+    setupPagination(images, page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function updateBannerVisibility(page){
+    // Đảm bảo nội dung chính được đẩy xuống khỏi Banner 
+    main.style.paddingTop='254px'; // Đã điều chỉnh để Gallery nằm dưới Banner
+    
+    dailyBanner.classList.add('show'); 
+    dailyBanner.style.pointerEvents='auto';
+    fixedBannerLabel.style.opacity='1';
+}
+
+function setupPagination(images, current) {
+    const pagination = document.getElementById('pagination');
+    pagination.innerHTML = '';
+
+    const totalPages = Math.ceil(images.length / IMAGES_PER_PAGE);
+
+    // Nút Previous
+    const prevBtn = document.createElement('button');
+    prevBtn.textContent = '<';
+    prevBtn.disabled = current === 1;
+    prevBtn.addEventListener('click', () => {
+        if (currentPage > 1) {
+            currentPage--;
+            displayPage(currentPage, images);
+        }
+    });
+
+    // Thông tin trang
+    const pageInfo = document.createElement('span');
+    pageInfo.id = 'pageInfo';
+    pageInfo.textContent = `${current} / ${totalPages}`;
+
+    // Nút Next
+    const nextBtn = document.createElement('button');
+    nextBtn.textContent = '>';
+    nextBtn.disabled = current === totalPages;
+    nextBtn.addEventListener('click', () => {
+        if (currentPage < totalPages) {
+            currentPage++;
+            displayPage(currentPage, images);
+        }
+    });
+
+    // Gắn vào DOM
+    pagination.appendChild(prevBtn);
+    pagination.appendChild(pageInfo);
+    pagination.appendChild(nextBtn);
+}
+
+function openImage(link){ modalImg.src=link; imageModal.classList.add('visible'); document.body.classList.add('lock-scroll'); }
+function closeImage(){ modalImg.src = ''; imageModal.classList.remove('visible'); document.body.classList.remove('lock-scroll'); }
+closeBtn.onclick=closeImage; 
+imageModal.onclick=e=>{if(e.target.id==='imageModal'||e.target.id==='closeBtn'){closeImage();}};
+document.addEventListener('keydown',e=>{if(e.key==="Escape"&&imageModal.classList.contains('visible')){closeImage();}});
+
+function openSocialImage(link){ openImage(link); }
+
+// --- HÀM START APP MỚI ---
+function startApp() {
+    // 1. Kích hoạt hiệu ứng ẩn màn hình chào mừng
+    welcomeScreen.classList.remove('fading-in'); 
+    welcomeScreen.classList.add('fading-out');
+    
+    // 2. Chạy hàm tải nội dung sau khi hiệu ứng biến mất kết thúc
+    setTimeout(() => {
+        bodyElement.classList.remove('lock-scroll');
+        
+        fetch(JSON_LINK)
+        .then(res => {
+            if (!res.ok) throw new Error('Lỗi tải pass.json: ' + res.status);
+            return res.json();
+        })
+        .then(data=>{ 
+            initializeContent(data); 
+        })
+        .catch(err=>{ 
+            console.error('Không load được pass.json', err); 
+            alert('Lỗi: Không thể tải thư viện ảnh. Vui lòng kiểm tra kết nối mạng hoặc đường dẫn file pass.json.');
+        });
+        
+        socialLinks.style.opacity = '1';
+        socialLinks.style.pointerEvents = 'auto';
+    }, 800); // Đợi 0.8s cho hiệu ứng fading-out kết thúc
+}
+// ----------------------------
+
+function showWelcomeScreen() {
+    // 1. Kích hoạt hiệu ứng pop-up xuất hiện
+    setTimeout(() => { welcomeScreen.classList.add('fading-in'); }, 100);
+    
+    // 2. Gắn sự kiện nhấp chuột cho nút Start
+    startBtn.addEventListener('click', startApp);    
+}
+
+window.onload = function() {
+    // 1. Bắt đầu fetch nội dung chính luôn
+    fetch(JSON_LINK)
+    .then(res => res.json())
+    .then(data => initializeContent(data))
+    .catch(err => console.error(err));
+
+    // 2. Hiển thị Pop-up welcome ngay
+    showWelcomeScreen();
+};
+
+function startApp() {
+    welcomeScreen.classList.remove('fading-in');
+    welcomeScreen.classList.add('fading-out');
+
+    setTimeout(() => {
+        bodyElement.classList.remove('lock-scroll');
+        socialLinks.style.opacity = '1';
+        socialLinks.style.pointerEvents = 'auto';
+    }, 800);
+}
+</script>
+</body>
+</html>
