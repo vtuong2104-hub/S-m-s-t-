@@ -46,22 +46,3 @@
 "https://i.supaimg.com/5040108f-ab2c-4734-81d5-2d8a60b59147.jpg"
   ]
 }
-<script>
-// ... nguyên đống code của mày ở trên ...
-
-// ===== THÊM FETCH VÀO ĐÂY =====
-
-async function loadData() {
-    try {
-        const res = await fetch(JSON_LINK);
-        const data = await res.json();
-        initializeContent(data);
-    } catch (err) {
-        console.error("Lỗi load JSON:", err);
-    }
-}
-
-loadData();
-
-// ===== HẾT FETCH =====
-</script>
